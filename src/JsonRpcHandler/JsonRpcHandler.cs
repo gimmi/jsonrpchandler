@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using JsonRpcHandler.Configuration;
 using JsonRpcHandler.ObjectFactory;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace JsonRpcHandler
 {
@@ -55,7 +57,8 @@ namespace JsonRpcHandler
 				id = GetPropertyValue<int?>("id", reqToken);
 				var methodName = GetPropertyValue<string>("method", reqToken);
 				MethodInfo methodInfo = _rpcConfiguration.GetMethodInfo(methodName);
-				object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", reqToken, new JArray()));
+				var jsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+				object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", reqToken, new JArray()), jsonSerializer);
 				object instance = _objectFactory.Resolve(_rpcConfiguration.GetMethodType(methodName));
 				JToken result;
 				try

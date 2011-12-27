@@ -32,7 +32,7 @@ namespace JsonRpcHandler
 				Content = new StreamWriter(context.Response.OutputStream, context.Response.ContentEncoding)
 			};
 
-			Handle(request, response, new JsonRpcHandler(new ParametersParser(JsonSerializer), RpcConfiguration, ObjectFactory, new MethodInvoker(JsonSerializer)));
+			Handle(request, response, new JsonRpcHandler(new ParametersParser(), RpcConfiguration, ObjectFactory, new MethodInvoker(JsonSerializer)));
 
 			context.Response.Status = response.Status;
 			context.Response.ContentType = response.ContentType;

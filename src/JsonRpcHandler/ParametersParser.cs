@@ -7,27 +7,20 @@ namespace JsonRpcHandler
 {
 	public class ParametersParser
 	{
-		private readonly JsonSerializer _jsonSerializer;
-
-		public ParametersParser(JsonSerializer jsonSerializer)
-		{
-			_jsonSerializer = jsonSerializer;
-		}
-
-		public virtual object[] Parse(ParameterInfo[] parameterInfos, JToken data)
+		public virtual object[] Parse(ParameterInfo[] parameterInfos, JToken data, JsonSerializer jsonSerializer)
 		{
 			switch(data.Type)
 			{
 				case JTokenType.Array:
-					return ParseByPosition(parameterInfos, (JArray)data);
+					return ParseByPosition(parameterInfos, (JArray)data, jsonSerializer);
 				case JTokenType.Object:
-					return ParseByName(parameterInfos, (JObject)data);
+					return ParseByName(parameterInfos, (JObject)data, jsonSerializer);
 				default:
 					throw new Exception(string.Format("Cannot extract parameters from a {0}", data.Type));
 			}
 		}
 
-		public virtual object[] ParseByPosition(ParameterInfo[] parameterInfos, JArray data)
+		public virtual object[] ParseByPosition(ParameterInfo[] parameterInfos, JArray data, JsonSerializer jsonSerializer)
 		{
 			if(parameterInfos.Length != data.Count)
 			{
@@ -36,12 +29,12 @@ namespace JsonRpcHandler
 			var parameters = new object[parameterInfos.Length];
 			for(int i = 0; i < parameterInfos.Length; i++)
 			{
-				parameters[i] = Deserialize(parameterInfos[i], data[i]);
+				parameters[i] = Deserialize(parameterInfos[i], data[i], jsonSerializer);
 			}
 			return parameters;
 		}
 
-		public virtual object[] ParseByName(ParameterInfo[] parameterInfos, JObject data)
+		public virtual object[] ParseByName(ParameterInfo[] parameterInfos, JObject data, JsonSerializer jsonSerializer)
 		{
 			var parameters = new object[parameterInfos.Length];
 			for(int i = 0; i < parameterInfos.Length; i++)
@@ -49,7 +42,7 @@ namespace JsonRpcHandler
 				JToken value;
 				if(data.TryGetValue(parameterInfos[i].Name, out value))
 				{
-					parameters[i] = Deserialize(parameterInfos[i], value);
+					parameters[i] = Deserialize(parameterInfos[i], value, jsonSerializer);
 				}
 				else
 				{
@@ -64,9 +57,9 @@ namespace JsonRpcHandler
 			return type.IsValueType ? Activator.CreateInstance(type) : null;
 		}
 
-		private object Deserialize(ParameterInfo parameterInfo, JToken value)
+		private object Deserialize(ParameterInfo parameterInfo, JToken value, JsonSerializer jsonSerializer)
 		{
-			return _jsonSerializer.Deserialize(new JTokenReader(value), parameterInfo.ParameterType);
+			return jsonSerializer.Deserialize(new JTokenReader(value), parameterInfo.ParameterType);
 		}
 	}
 }
