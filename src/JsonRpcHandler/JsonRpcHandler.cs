@@ -53,9 +53,10 @@ namespace JsonRpcHandler
 			try
 			{
 				id = GetPropertyValue<int?>("id", reqToken);
-				MethodInfo methodInfo = _methodResolver.GetMethodInfo(GetPropertyValue<string>("method", reqToken));
+				var methodName = GetPropertyValue<string>("method", reqToken);
+				MethodInfo methodInfo = _methodResolver.GetMethodInfo(methodName);
 				object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", reqToken, new JArray()));
-				object instance = _objectFactory.Resolve(methodInfo.DeclaringType);
+				object instance = _objectFactory.Resolve(_methodResolver.GetMethodType(methodName));
 				JToken result;
 				try
 				{

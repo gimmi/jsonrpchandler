@@ -77,6 +77,7 @@ namespace JsonRpcHandler.Tests
 			var parameters = new object[0];
 
 			_methodResolver.Stub(x => x.GetMethodInfo("MethodName")).Return(methodInfo);
+			_methodResolver.Stub(x => x.GetMethodType("MethodName")).Return(type);
 			_parametersParser.Stub(x => x.Parse(parameterInfos, JToken.Parse("[ 1, 2, 3 ]"))).Return(parameters);
 			_objectFactory.Stub(x => x.Resolve(type)).Return(instance);
 			_methodInvoker.Stub(x => x.Invoke(methodInfo, instance, parameters)).Return(JToken.Parse("456"));
