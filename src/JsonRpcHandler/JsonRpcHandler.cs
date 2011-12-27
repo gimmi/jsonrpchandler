@@ -39,38 +39,19 @@ namespace JsonRpcHandler
 			return resps;
 		}
 
-		private T GetPropertyValue<T>(string name, JToken reqToken, T def = default(T))
-		{
-			JToken val;
-			if(reqToken.Type == JTokenType.Object && ((JObject)reqToken).TryGetValue(name, out val))
-			{
-				return val.Value<T>();
-			}
-			return def;
-		}
-
-		private JToken HandleSingleRequest(JToken reqToken)
+		private JToken HandleSingleRequest(JToken request)
 		{
 			var response = new JObject {
 				{ "jsonrpc", "2.0" },
-				{ "id", GetPropertyValue<int?>("id", reqToken) }
+				{ "id", GetPropertyValue<int?>("id", request) }
 			};
 			try
 			{
-				var methodName = GetPropertyValue<string>("method", reqToken);
+				var methodName = GetPropertyValue<string>("method", request);
+				Type type = _rpcConfiguration.GetMethodType(methodName);
 				MethodInfo methodInfo = _rpcConfiguration.GetMethodInfo(methodName);
-				var jsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-				object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", reqToken, new JArray()), jsonSerializer);
-				object instance = _objectFactory.Resolve(_rpcConfiguration.GetMethodType(methodName));
 				JToken result;
-				try
-				{
-					result = _methodInvoker.Invoke(methodInfo, instance, parameters, jsonSerializer);
-				}
-				finally
-				{
-					_objectFactory.Release(instance);
-				}
+				result = Handle(request, type, methodInfo);
 				response.Add("result", result);
 			}
 			catch(Exception e)
@@ -81,6 +62,33 @@ namespace JsonRpcHandler
 				});
 			}
 			return response;
+		}
+
+		private JToken Handle(JToken request, Type type, MethodInfo methodInfo)
+		{
+			var jsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+			object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", request, new JArray()), jsonSerializer);
+			object instance = _objectFactory.Resolve(type);
+			JToken result;
+			try
+			{
+				result = _methodInvoker.Invoke(methodInfo, instance, parameters, jsonSerializer);
+			}
+			finally
+			{
+				_objectFactory.Release(instance);
+			}
+			return result;
+		}
+
+		private T GetPropertyValue<T>(string name, JToken reqToken, T def = default(T))
+		{
+			JToken val;
+			if(reqToken.Type == JTokenType.Object && ((JObject)reqToken).TryGetValue(name, out val))
+			{
+				return val.Value<T>();
+			}
+			return def;
 		}
 	}
 }
