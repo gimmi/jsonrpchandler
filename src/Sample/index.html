@@ -1,23 +1,18 @@
 ﻿<html>
 	<head>
 		<title></title>
-		<script type="text/javascript">
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "rpc", true);
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.onreadystatechange = function() {
-			if (this.readyState == 4) {
-				var resp = JSON.parse(this.response);
-				alert(resp.result);
-			}
-		};
-		xhr.send(JSON.stringify({
-				jsonrpc: '2.0',
-				id: 1,
-				method: 'Service.echo',
-				params: ['Hello world']
-			}));
-	</script>
+		<link rel="stylesheet" type="text/css" href="jasmine-1.1.0/jasmine.css">
+		<script type="text/javascript" src="jasmine-1.1.0/jasmine.js"> </script>
+		<script type="text/javascript" src="jasmine-1.1.0/jasmine-html.js"> </script>
+
+		<script type="text/javascript" src="jsonrpc.js"> </script>
+
+		<script type="text/javascript" src="tests.js"> </script>
 	</head>
-	<body></body>
+	<body>
+		<script type="text/javascript">
+				jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+				jasmine.getEnv().execute();
+		</script>
+	</body>
 </html>

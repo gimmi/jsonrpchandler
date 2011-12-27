@@ -41,8 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tests.js" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
+    <Content Include="jasmine-1.1.0\jasmine-html.js" />
+    <Content Include="jasmine-1.1.0\jasmine.css" />
+    <Content Include="jasmine-1.1.0\jasmine.js" />
+    <Content Include="jasmine-1.1.0\jasmine_favicon.png" />
+    <Content Include="jsonrpc.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +66,9 @@
       <Project>{F474DDA3-4CEF-435E-A727-275B4A625640}</Project>
       <Name>JsonRpcHandler</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jasmine-1.1.0\MIT.LICENSE" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
