@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="JsonRpcHandlerTest.cs" />
     <Compile Include="JsonRpcHttpHandlerTest.cs" />
-    <Compile Include="MethodResolver\LambdaMethodResolverTest.cs" />
+    <Compile Include="Configuration\LambdaRpcConfigurationTest.cs" />
     <Compile Include="ParameterValuesParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 using JsonRpcHandler;
-using JsonRpcHandler.MethodResolver;
+using JsonRpcHandler.Configuration;
 
 namespace Sample
 {
@@ -9,7 +9,7 @@ namespace Sample
 	{
 		protected void Application_Start(object sender, EventArgs e)
 		{
-			JsonRpcHttpHandler.MethodResolver = new LambdaMethodResolver()
+			JsonRpcHttpHandler.RpcConfiguration = new LambdaRpcConfiguration()
 				.Register<Service>("Service.echo", x => x.Echo(null));
 		}
 

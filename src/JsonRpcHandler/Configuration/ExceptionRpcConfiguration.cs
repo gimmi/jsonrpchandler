@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 
-namespace JsonRpcHandler.MethodResolver
+namespace JsonRpcHandler.Configuration
 {
-	public class ExceptionMethodResolver : IMethodResolver
+	public class ExceptionRpcConfiguration : IRpcConfiguration
 	{
 		public MethodInfo GetMethodInfo(string name)
 		{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using JsonRpcHandler.MethodResolver;
+using JsonRpcHandler.Configuration;
 using JsonRpcHandler.ObjectFactory;
 using Newtonsoft.Json.Linq;
 
@@ -9,15 +9,15 @@ namespace JsonRpcHandler
 {
 	public class JsonRpcHandler
 	{
-		private readonly IMethodResolver _methodResolver;
+		private readonly IRpcConfiguration _rpcConfiguration;
 		private readonly IObjectFactory _objectFactory;
 		private readonly MethodInvoker _methodInvoker;
 		private readonly ParametersParser _parametersParser;
 
-		public JsonRpcHandler(ParametersParser parametersParser, IMethodResolver methodResolver, IObjectFactory objectFactory, MethodInvoker methodInvoker)
+		public JsonRpcHandler(ParametersParser parametersParser, IRpcConfiguration rpcConfiguration, IObjectFactory objectFactory, MethodInvoker methodInvoker)
 		{
 			_parametersParser = parametersParser;
-			_methodResolver = methodResolver;
+			_rpcConfiguration = rpcConfiguration;
 			_objectFactory = objectFactory;
 			_methodInvoker = methodInvoker;
 		}
@@ -54,9 +54,9 @@ namespace JsonRpcHandler
 			{
 				id = GetPropertyValue<int?>("id", reqToken);
 				var methodName = GetPropertyValue<string>("method", reqToken);
-				MethodInfo methodInfo = _methodResolver.GetMethodInfo(methodName);
+				MethodInfo methodInfo = _rpcConfiguration.GetMethodInfo(methodName);
 				object[] parameters = _parametersParser.Parse(methodInfo.GetParameters(), GetPropertyValue("params", reqToken, new JArray()));
-				object instance = _objectFactory.Resolve(_methodResolver.GetMethodType(methodName));
+				object instance = _objectFactory.Resolve(_rpcConfiguration.GetMethodType(methodName));
 				JToken result;
 				try
 				{

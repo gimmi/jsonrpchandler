@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace JsonRpcHandler.MethodResolver
+namespace JsonRpcHandler.Configuration
 {
-	public class LambdaMethodResolver : IMethodResolver
+	public class LambdaRpcConfiguration : IRpcConfiguration
 	{
 		private readonly IDictionary<string, MethodMetadata> _methodInfos = new Dictionary<string, MethodMetadata>();
 
@@ -29,17 +29,17 @@ namespace JsonRpcHandler.MethodResolver
 			return _methodInfos[name];
 		}
 
-		public LambdaMethodResolver Register<T>(string name, Expression<Action<T>> expression)
+		public LambdaRpcConfiguration Register<T>(string name, Expression<Action<T>> expression)
 		{
 			return Register(name, typeof(T), expression);
 		}
 
-		public LambdaMethodResolver Register<T, TResult>(string name, Expression<Func<T, TResult>> expression)
+		public LambdaRpcConfiguration Register<T, TResult>(string name, Expression<Func<T, TResult>> expression)
 		{
 			return Register(name, typeof(T), expression);
 		}
 
-		public LambdaMethodResolver Register(string name, Type type, LambdaExpression expression)
+		public LambdaRpcConfiguration Register(string name, Type type, LambdaExpression expression)
 		{
 			var outermostExpression = expression.Body as MethodCallExpression;
 			if(outermostExpression == null)

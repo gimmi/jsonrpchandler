@@ -1,19 +1,19 @@
 ﻿using System;
-using JsonRpcHandler.MethodResolver;
+using JsonRpcHandler.Configuration;
 using NUnit.Framework;
 using SharpTestsEx;
 
-namespace JsonRpcHandler.Tests.MethodResolver
+namespace JsonRpcHandler.Tests.Configuration
 {
 	[TestFixture]
-	public class LambdaMethodResolverTest
+	public class LambdaRpcConfigurationTest
 	{
-		private LambdaMethodResolver _target;
+		private LambdaRpcConfiguration _target;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_target = new LambdaMethodResolver();
+			_target = new LambdaRpcConfiguration();
 		}
 
 		[Test]

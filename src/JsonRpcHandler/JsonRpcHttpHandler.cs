@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web;
-using JsonRpcHandler.MethodResolver;
+using JsonRpcHandler.Configuration;
 using JsonRpcHandler.ObjectFactory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,7 +11,7 @@ namespace JsonRpcHandler
 {
 	public class JsonRpcHttpHandler : IHttpHandler
 	{
-		public static IMethodResolver MethodResolver = new ExceptionMethodResolver();
+		public static IRpcConfiguration RpcConfiguration = new ExceptionRpcConfiguration();
 		public static JsonSerializer JsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 		public static IObjectFactory ObjectFactory = new ActivatorObjectFactory();
 
@@ -32,7 +32,7 @@ namespace JsonRpcHandler
 				Content = new StreamWriter(context.Response.OutputStream, context.Response.ContentEncoding)
 			};
 
-			Handle(request, response, new JsonRpcHandler(new ParametersParser(JsonSerializer), MethodResolver, ObjectFactory, new MethodInvoker(JsonSerializer)));
+			Handle(request, response, new JsonRpcHandler(new ParametersParser(JsonSerializer), RpcConfiguration, ObjectFactory, new MethodInvoker(JsonSerializer)));
 
 			context.Response.Status = response.Status;
 			context.Response.ContentType = response.ContentType;
