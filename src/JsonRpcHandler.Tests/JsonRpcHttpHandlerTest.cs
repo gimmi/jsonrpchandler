@@ -41,6 +41,17 @@ namespace JsonRpcHandler.Tests
 		}
 
 		[Test]
+		public void Should_tolerate_content_type_with_extra_infos()
+		{
+			_target.Handle(new HttpRequest {
+				HttpMethod = "POST",
+				ContentType = "application/json; charset=utf-8",
+				Content = new StringReader("\"request\"")
+			}, _httpResponse, _jsonRpcHandler);
+			_httpResponse.Status.Should().Be.EqualTo("200 OK");
+		}
+
+		[Test]
 		public void Should_respond_not_allowed_for_get_request()
 		{
 			_target.Handle(new HttpRequest { HttpMethod = "GET" }, _httpResponse, _jsonRpcHandler);
@@ -55,7 +66,7 @@ namespace JsonRpcHandler.Tests
 		}
 
 		[Test]
-		public void Should_respond_unsupported_medie_for_non_json_request()
+		public void Should_respond_unsupported_media_for_non_json_request()
 		{
 			_target.Handle(new HttpRequest { HttpMethod = "POST", ContentType = "text/plain" }, _httpResponse, _jsonRpcHandler);
 			_httpResponse.Status.Should().Be.EqualTo("415 Unsupported Media Type");

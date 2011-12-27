@@ -43,7 +43,7 @@ namespace JsonRpcHandler
 				resp.Status = "405 Method Not Allowed";
 				return;
 			}
-			if(req.ContentType != "application/json")
+			if(!req.ContentType.StartsWith("application/json"))
 			{
 				resp.Status = "415 Unsupported Media Type";
 				return;
