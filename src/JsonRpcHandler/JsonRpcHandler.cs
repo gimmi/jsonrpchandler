@@ -51,10 +51,12 @@ namespace JsonRpcHandler
 
 		private JToken HandleSingleRequest(JToken reqToken)
 		{
-			int? id = null;
+			var response = new JObject {
+				{ "jsonrpc", "2.0" },
+				{ "id", GetPropertyValue<int?>("id", reqToken) }
+			};
 			try
 			{
-				id = GetPropertyValue<int?>("id", reqToken);
 				var methodName = GetPropertyValue<string>("method", reqToken);
 				MethodInfo methodInfo = _rpcConfiguration.GetMethodInfo(methodName);
 				var jsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
@@ -69,24 +71,16 @@ namespace JsonRpcHandler
 				{
 					_objectFactory.Release(instance);
 				}
-				return new JObject {
-					{ "jsonrpc", "2.0" },
-					{ "id", id },
-					{ "result", result }
-				};
+				response.Add("result", result);
 			}
 			catch(Exception e)
 			{
-				var error = new JObject {
+				response.Add("error", new JObject {
 					{ "code", -32603 },
 					{ "message", e.Message }
-				};
-				return new JObject {
-					{ "jsonrpc", "2.0" },
-					{ "id", id },
-					{ "error", error }
-				};
+				});
 			}
+			return response;
 		}
 	}
 }
