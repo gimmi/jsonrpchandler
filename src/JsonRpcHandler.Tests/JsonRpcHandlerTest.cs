@@ -25,7 +25,7 @@ namespace JsonRpcHandler.Tests
 			_rpcConfiguration = MockRepository.GenerateStub<IRpcConfiguration>();
 			_parametersParser = MockRepository.GenerateStub<ParametersParser>();
 			_objectFactory = MockRepository.GenerateStub<ActivatorObjectFactory>();
-			_methodInvoker = MockRepository.GenerateStub<MethodInvoker>((JsonSerializer)null);
+			_methodInvoker = MockRepository.GenerateStub<MethodInvoker>();
 			_target = new JsonRpcHandler(_parametersParser, _rpcConfiguration, _objectFactory, _methodInvoker);
 		}
 
@@ -62,7 +62,7 @@ namespace JsonRpcHandler.Tests
 			_rpcConfiguration.Stub(x => x.GetMethodInfo(Arg<string>.Is.Anything)).Return(typeof(Object).GetMethod("ToString"));
 			_parametersParser.Stub(x => x.Parse(Arg<ParameterInfo[]>.Is.Anything, Arg<JToken>.Is.Anything, Arg<JsonSerializer>.Is.Anything)).Return(new object[0]);
 			_objectFactory.Stub(x => x.Resolve(Arg<Type>.Is.Anything)).Return(new object());
-			_methodInvoker.Stub(x => x.Invoke(Arg<MethodInfo>.Is.Anything, Arg<object>.Is.Anything, Arg<Object[]>.Is.Anything)).Throw(new Exception("invocation error"));
+			_methodInvoker.Stub(x => x.Invoke(Arg<MethodInfo>.Is.Anything, Arg<object>.Is.Anything, Arg<Object[]>.Is.Anything, Arg<JsonSerializer>.Is.Anything)).Throw(new Exception("invocation error"));
 
 			EvaluateBatch("{ method: 'NotExistingMethod' }", "{ jsonrpc: '2.0', id: null, error: { code: -32603, message: 'invocation error' } }");
 		}
@@ -80,7 +80,7 @@ namespace JsonRpcHandler.Tests
 			_rpcConfiguration.Stub(x => x.GetMethodType("MethodName")).Return(type);
 			_parametersParser.Stub(x => x.Parse(Arg<ParameterInfo[]>.Is.Equal(parameterInfos), Arg<JToken>.Is.Equal(JToken.Parse("[ 1, 2, 3 ]")), Arg<JsonSerializer>.Is.Anything)).Return(parameters);
 			_objectFactory.Stub(x => x.Resolve(type)).Return(instance);
-			_methodInvoker.Stub(x => x.Invoke(methodInfo, instance, parameters)).Return(JToken.Parse("456"));
+			_methodInvoker.Stub(x => x.Invoke(Arg<MethodInfo>.Is.Equal(methodInfo), Arg<object>.Is.Equal(instance), Arg<ParameterInfo[]>.Is.Equal(parameters), Arg<JsonSerializer>.Is.Anything)).Return(JToken.Parse("456"));
 
 			EvaluateBatch("{ id: 123, method: 'MethodName', params: [ 1, 2, 3 ] }", "{ jsonrpc: '2.0', id: 123, result: 456 }");
 		}

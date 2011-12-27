@@ -6,19 +6,12 @@ namespace JsonRpcHandler
 {
 	public class MethodInvoker
 	{
-		private readonly JsonSerializer _jsonSerializer;
-
-		public MethodInvoker(JsonSerializer jsonSerializer)
-		{
-			_jsonSerializer = jsonSerializer;
-		}
-
-		public virtual JToken Invoke(MethodInfo methodInfo, object instance, object[] parameters)
+		public virtual JToken Invoke(MethodInfo methodInfo, object instance, object[] parameters, JsonSerializer jsonSerializer)
 		{
 			object result = methodInfo.Invoke(instance, parameters);
 			using(var writer = new JTokenWriter())
 			{
-				_jsonSerializer.Serialize(writer, result);
+				jsonSerializer.Serialize(writer, result);
 				return writer.Token;
 			}
 		}

@@ -63,7 +63,7 @@ namespace JsonRpcHandler
 				JToken result;
 				try
 				{
-					result = _methodInvoker.Invoke(methodInfo, instance, parameters);
+					result = _methodInvoker.Invoke(methodInfo, instance, parameters, jsonSerializer);
 				}
 				finally
 				{

@@ -5,14 +5,12 @@ using JsonRpcHandler.Configuration;
 using JsonRpcHandler.ObjectFactory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace JsonRpcHandler
 {
 	public class JsonRpcHttpHandler : IHttpHandler
 	{
 		public static IRpcConfiguration RpcConfiguration = new ExceptionRpcConfiguration();
-		public static JsonSerializer JsonSerializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 		public static IObjectFactory ObjectFactory = new ActivatorObjectFactory();
 
 		public bool IsReusable
@@ -32,7 +30,7 @@ namespace JsonRpcHandler
 				Content = new StreamWriter(context.Response.OutputStream, context.Response.ContentEncoding)
 			};
 
-			Handle(request, response, new JsonRpcHandler(new ParametersParser(), RpcConfiguration, ObjectFactory, new MethodInvoker(JsonSerializer)));
+			Handle(request, response, new JsonRpcHandler(new ParametersParser(), RpcConfiguration, ObjectFactory, new MethodInvoker()));
 
 			context.Response.Status = response.Status;
 			context.Response.ContentType = response.ContentType;
