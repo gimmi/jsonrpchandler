@@ -15,25 +15,29 @@ JsonRpc.prototype = {
 			callback = args.shift() || function () { },
 			scope = args.shift() || this;
 
-		this._doJsonPost(this._url, req, function(success, data) {
-			if(!success) {
+		this._doJsonPost(this._url, req, function (success, data) {
+			if (!success) {
 				callback.call(scope, undefined, false, data);
-			} else if(data.error) {
+			} else if (data.error) {
 				callback.call(scope, undefined, false, data.error.message);
 			} else {
 				callback.call(scope, data.result, true);
 			}
 		});
 	},
-	
-	_shiftUntilFunction : function (args) {
+
+	_shiftUntilFunction: function (args) {
 		var ret = [];
-		while (args[0] && Object.prototype.toString.apply(args[0]) !== '[object Function]') {
+		while (args[0] && !this._isFunction(args[0])) {
 			ret.push(args.shift());
 		}
 		return ret;
 	},
-	
+
+	_isFunction: function (v) {
+		return Object.prototype.toString.apply(v) === '[object Function]';
+	},
+
 	_doJsonPost: function (url, data, callback) {
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", url, true);

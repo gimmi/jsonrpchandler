@@ -24,5 +24,4 @@
 			expect(this.success).toBeTruthy();
 		});
 	});
-
 });
