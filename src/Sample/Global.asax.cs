@@ -9,8 +9,9 @@ namespace Sample
 	{
 		protected void Application_Start(object sender, EventArgs e)
 		{
-			JsonRpcHttpHandler.RpcConfiguration = new LambdaRpcConfiguration()
+			LambdaRpcConfiguration cfg = new LambdaRpcConfiguration()
 				.Register<Service>("Service.echo", x => x.Echo(null));
+			JsonRpcHttpHandler.SetConfiguration(cfg);
 		}
 
 		protected void Session_Start(object sender, EventArgs e) {}
