@@ -53,22 +53,20 @@ namespace JsonRpcHandler
 				}
 				else
 				{
-					parameters[i] = (parameterInfos[i].ParameterType.IsValueType ? Activator.CreateInstance(parameterInfos[i].ParameterType) : null);
+					parameters[i] = GetDefaultValue(parameterInfos[i].ParameterType);
 				}
 			}
 			return parameters;
 		}
 
+		private static object GetDefaultValue(Type type)
+		{
+			return type.IsValueType ? Activator.CreateInstance(type) : null;
+		}
+
 		private object Deserialize(ParameterInfo parameterInfo, JToken value)
 		{
-			try
-			{
-				return _jsonSerializer.Deserialize(new JTokenReader(value), parameterInfo.ParameterType);
-			}
-			catch(Exception e)
-			{
-				throw new Exception(string.Format("Cannot convert value for parameter {0}.{1}({2} {3})", parameterInfo.Member.DeclaringType, parameterInfo.Member.Name, parameterInfo.ParameterType, parameterInfo.Name), e);
-			}
+			return _jsonSerializer.Deserialize(new JTokenReader(value), parameterInfo.ParameterType);
 		}
 	}
 }
