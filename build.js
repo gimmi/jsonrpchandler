@@ -27,9 +27,9 @@ task('assemblyinfo', 'version', function () {
 		AssemblyTrademark: '',
 		AssemblyCompany: 'Gian Marco Gherardi',
 		AssemblyConfiguration: '', // Probably a good place to put Git SHA1 and build date
-		AssemblyVersion: [ version.major, version.minor, version.build, version.revision ].join('.'),
-		AssemblyFileVersion: [ version.major, version.minor, version.build, version.revision ].join('.'),
-		AssemblyInformationalVersion: [ version.major, version.minor, version.build, version.revision ].join('.')
+		AssemblyVersion: [ version.major, version.minor, version.build, 0 ].join('.'),
+		AssemblyFileVersion: [ version.major, version.minor, version.build, 0 ].join('.'),
+		AssemblyInformationalVersion: [ version.major, version.minor, version.build, 0 ].join('.')
 	});
 });
 
@@ -45,7 +45,7 @@ task('test', 'build', function () {
 task('release', 'test', function () {
 	fs.deletePath('build');
 	dotnet.deployToNuGet('src/JsonRpcHandler/JsonRpcHandler.csproj', 'build');
-	version.revision += 1;
+	version.build += 1;
 	fs.writeFile('version.json', JSON.stringify(version));
 });
 
