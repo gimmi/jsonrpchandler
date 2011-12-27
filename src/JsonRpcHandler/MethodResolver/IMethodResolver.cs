@@ -1,9 +1,11 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace JsonRpcHandler.MethodResolver
 {
 	public interface IMethodResolver
 	{
-		MethodInfo Resolve(string name);
+		MethodInfo GetMethodInfo(string name);
+		Type GetMethodType(string name);
 	}
 }
