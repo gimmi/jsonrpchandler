@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace JsonRpcHandler
 {
-	public class JsonRpcHttpHandler : IHttpHandler
+	public class JsonRpcHttpHandler : IHttpHandler, IRequiresSessionState // See http://stackoverflow.com/questions/1382791
 	{
 		private static IRpcConfiguration _rpcConfiguration = new ExceptionRpcConfiguration();
 		private static RpcHandlerInterceptor _rpcHandlerInterceptor = (type, info, invoker) => invoker.Invoke();
