@@ -2,7 +2,6 @@
 using System.IO;
 using System.Web;
 using JsonRpcHandler.Configuration;
-using JsonRpcHandler.ObjectFactory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +10,7 @@ namespace JsonRpcHandler
 	public class JsonRpcHttpHandler : IHttpHandler
 	{
 		public static IRpcConfiguration RpcConfiguration = new ExceptionRpcConfiguration();
-		public static IObjectFactory ObjectFactory = new ActivatorObjectFactory();
+		private static RpcHandlerInterceptor _rpcHandlerInterceptor = (type, info, invoker) => invoker.Invoke();
 
 		public bool IsReusable
 		{
@@ -30,7 +29,7 @@ namespace JsonRpcHandler
 				Content = new StreamWriter(context.Response.OutputStream, context.Response.ContentEncoding)
 			};
 
-			Handle(request, response, new JsonRpcHandler(new ParametersParser(), RpcConfiguration, ObjectFactory, new MethodInvoker()));
+			Handle(request, response, new JsonRpcHandler(new ParametersParser(), RpcConfiguration, new MethodInvoker(), _rpcHandlerInterceptor));
 
 			context.Response.Status = response.Status;
 			context.Response.ContentType = response.ContentType;
