@@ -16,6 +16,7 @@ namespace Sample
 				.Register<Service>("objectEcho", x => x.ObjectEcho(null))
 				.Register<Service>("jObjectEcho", x => x.JObjectEcho(null))
 				.Register<Service>("noParams", x => x.NoParams())
+				.Register<Service>("exception", x => x.Exception())
 				.Register<Service>("numberEcho", x => x.NumberEcho(0));
 			JsonRpcHttpHandler.SetConfiguration(cfg);
 		}

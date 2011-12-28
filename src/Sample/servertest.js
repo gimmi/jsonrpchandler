@@ -3,24 +3,24 @@
 describe('server test', function () {
 	var target;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		target = new JsonRpc('rpc');
 	});
 
-	it('should echo string value', function() {
+	it('should echo string value', function () {
 		var actual;
 
-		runs(function() {
+		runs(function () {
 			target.call('stringEcho', 'Hello world', function (ret) {
 				actual = ret;
 			}, this);
 		});
 
-		waitsFor(function() {
+		waitsFor(function () {
 			return !!actual;
 		}, 'Server call', 1000);
 
-		runs(function() {
+		runs(function () {
 			expect(actual).toEqual('Hello world');
 		});
 	});
@@ -87,7 +87,7 @@ describe('server test', function () {
 			return this.done;
 		}, 'Server call', 1000);
 		runs(function () {
-			
+
 			expect(actual).toEqual([1, 2, 3]);
 		});
 	});
@@ -106,7 +106,7 @@ describe('server test', function () {
 			return this.done;
 		}, 'Server call', 1000);
 		runs(function () {
-			
+
 			expect(actual).toEqual(obj);
 		});
 	});
@@ -125,7 +125,7 @@ describe('server test', function () {
 			return this.done;
 		}, 'Server call', 1000);
 		runs(function () {
-			
+
 			expect(actual).toEqual(obj);
 		});
 	});
@@ -144,8 +144,36 @@ describe('server test', function () {
 		}, 'Server call', 1000);
 
 		runs(function () {
-			
+
 			expect(this.actual).toEqual(true);
+		});
+	});
+
+	it("should notify exception as expected", function () {
+		var successArgs, failureArgs, callbackArgs;
+
+		runs(function () {
+			target.call('exception', {
+				success: function () {
+					successArgs = arguments;
+				},
+				failure: function () {
+					failureArgs = arguments;
+				},
+				callback: function () {
+					callbackArgs = arguments;
+				}
+			});
+		});
+
+		waitsFor(function () {
+			return !!callbackArgs;
+		}, 'Server call', 1000);
+
+		runs(function () {
+			expect(successArgs).toBeUndefined();
+			expect(failureArgs).toEqual(['Exception has been thrown by the target of an invocation.']); // TODO fix error message on server
+			expect(callbackArgs).toEqual([false, 'Exception has been thrown by the target of an invocation.']);
 		});
 	});
 });
