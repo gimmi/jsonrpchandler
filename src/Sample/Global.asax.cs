@@ -10,7 +10,13 @@ namespace Sample
 		protected void Application_Start(object sender, EventArgs e)
 		{
 			LambdaRpcConfiguration cfg = new LambdaRpcConfiguration()
-				.Register<Service>("Service.echo", x => x.Echo(null));
+				.Register<Service>("stringEcho", x => x.StringEcho(null))
+				.Register<Service>("boolEcho", x => x.BoolEcho(false))
+				.Register<Service>("arrayEcho", x => x.ArrayEcho(null))
+				.Register<Service>("objectEcho", x => x.ObjectEcho(null))
+				.Register<Service>("jObjectEcho", x => x.JObjectEcho(null))
+				.Register<Service>("noParams", x => x.NoParams())
+				.Register<Service>("numberEcho", x => x.NumberEcho(0));
 			JsonRpcHttpHandler.SetConfiguration(cfg);
 		}
 
