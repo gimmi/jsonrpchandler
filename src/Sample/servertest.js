@@ -1,27 +1,25 @@
-﻿describe("Jasmine", function () {
-	var rpc;
+﻿describe('server test', function () {
+	var target;
 
 	beforeEach(function () {
-		rpc = new JsonRpc('rpc');
+		target = new JsonRpc('rpc');
 	});
 
 	it('should echo string value', function () {
 		var actual;
+		
 		runs(function () {
-			rpc.call('Service.echo', 'Hello world', function (ret, success) {
-				this.success = success;
-				this.done = true;
+			target.call('Service.echo', 'Hello world', function (ret) {
 				actual = ret;
 			}, this);
 		});
-		
+
 		waitsFor(function () {
-			return this.done;
+			return !!actual;
 		}, 'Server call', 1000);
-		
+
 		runs(function () {
 			expect(actual).toEqual('Hello world');
-			expect(this.success).toBeTruthy();
 		});
 	});
-});
+})

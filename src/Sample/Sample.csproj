@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="tests.js" />
+    <Content Include="servertest.js" />
+    <Content Include="jsonrpctest.js" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="jasmine-1.1.0\jasmine-html.js" />
