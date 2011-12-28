@@ -44,15 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="jsonrpc-0.1.0\jsonrpc.js" />
+    <Content Include="jsonrpc-0.1.0\jsonrpc.min.js" />
     <Content Include="servertest.js" />
-    <Content Include="jsonrpctest.js" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="jasmine-1.1.0\jasmine-html.js" />
     <Content Include="jasmine-1.1.0\jasmine.css" />
     <Content Include="jasmine-1.1.0\jasmine.js" />
     <Content Include="jasmine-1.1.0\jasmine_favicon.png" />
-    <Content Include="jsonrpc.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
