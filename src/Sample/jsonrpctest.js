@@ -27,6 +27,14 @@
 		expect(actual.scope).toBe(scope);
 	});
 
+	it('should assign progressive ids', function () {
+		var successFn = jasmine.createSpy();
+
+		expect(target._getParams('method', successFn).request.id).toEqual(1);
+		expect(target._getParams('method', successFn).request.id).toEqual(2);
+		expect(target._getParams('method', successFn).request.id).toEqual(3);
+	});
+
 	it('should interpret call with options', function () {
 		var scope = {},
 		    successFn = jasmine.createSpy(),
