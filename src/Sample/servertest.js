@@ -1,4 +1,4 @@
-﻿/*global describe, beforeEach, expect, it */
+/*global describe, beforeEach, expect, it */
 
 describe('server test', function () {
 	var target;

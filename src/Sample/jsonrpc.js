@@ -1,4 +1,4 @@
-﻿JsonRpc = function(url) {
+JsonRpc = function(url) {
 	this._url = url;
 	this._id = 0;
 };

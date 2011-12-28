@@ -1,4 +1,4 @@
-﻿describe("jsonrpc", function () {
+describe("jsonrpc", function () {
 	var target;
 
 	beforeEach(function () {
