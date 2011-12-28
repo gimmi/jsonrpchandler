@@ -55,7 +55,14 @@ namespace JsonRpcHandler
 				});
 				response.Add("result", result);
 			}
-			catch(Exception e)
+			catch (TargetInvocationException e)
+			{
+				response.Add("error", new JObject {
+					{ "code", -32603 },
+					{ "message", e.InnerException.Message }
+				});
+			}
+			catch (Exception e)
 			{
 				response.Add("error", new JObject {
 					{ "code", -32603 },

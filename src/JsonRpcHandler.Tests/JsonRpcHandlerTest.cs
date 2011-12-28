@@ -73,6 +73,18 @@ namespace JsonRpcHandler.Tests
 		}
 
 		[Test]
+		public void Should_return_inner_error_when_invocation_throws_targetinvocationexception()
+		{
+			_rpcConfiguration.Stub(x => x.GetMethodType(Arg<string>.Is.Anything)).Return(typeof(Object));
+			_rpcConfiguration.Stub(x => x.GetMethodInfo(Arg<string>.Is.Anything)).Return(typeof(Object).GetMethod("ToString"));
+			_parametersParser.Stub(x => x.Parse(Arg<ParameterInfo[]>.Is.Anything, Arg<JToken>.Is.Anything, Arg<JsonSerializer>.Is.Anything)).Return(new object[0]);
+			_rpcHandlerInterceptor.Stub(x => x.Invoke(Arg<Type>.Is.Anything, Arg<MethodInfo>.Is.Anything, Arg<RpcHandlerInvoker>.Is.Anything)).Do(new RpcHandlerInterceptor((type, method, invoker) => invoker.Invoke()));
+			_methodInvoker.Stub(x => x.Invoke(Arg<MethodInfo>.Is.Anything, Arg<object>.Is.Anything, Arg<Object[]>.Is.Anything, Arg<JsonSerializer>.Is.Anything)).Throw(new TargetInvocationException("reflection exception", new Exception("invocation error")));
+
+			EvaluateBatch("{ method: 'NotExistingMethod' }", "{ jsonrpc: '2.0', id: null, error: { code: -32603, message: 'invocation error' } }");
+		}
+
+		[Test]
 		public void Should_process_correct_request()
 		{
 			MethodInfo methodInfo = typeof(Object).GetMethod("ToString");

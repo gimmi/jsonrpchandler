@@ -172,8 +172,8 @@ describe('server test', function () {
 
 		runs(function () {
 			expect(successArgs).toBeUndefined();
-			expect(failureArgs).toEqual(['Exception has been thrown by the target of an invocation.']); // TODO fix error message on server
-			expect(callbackArgs).toEqual([false, 'Exception has been thrown by the target of an invocation.']);
+			expect(failureArgs).toEqual(['An error occured']);
+			expect(callbackArgs).toEqual([false, 'An error occured']);
 		});
 	});
 });
