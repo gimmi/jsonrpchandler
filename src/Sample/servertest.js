@@ -4,7 +4,7 @@ describe('server test', function () {
 	var target;
 
 	beforeEach(function () {
-		target = new JsonRpc('rpc');
+		target = new jsonrpc.JsonRpc('rpc');
 	});
 
 	it('should echo string value', function () {

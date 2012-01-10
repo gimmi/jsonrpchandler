@@ -44,8 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="jsonrpc-0.1.0\jsonrpc.js" />
-    <Content Include="jsonrpc-0.1.0\jsonrpc.min.js" />
+    <Content Include="js\jsonrpc-0.1.4.js" />
     <Content Include="servertest.js" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />

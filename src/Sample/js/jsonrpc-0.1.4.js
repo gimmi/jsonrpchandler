@@ -1,5 +1,5 @@
 /*
-JsonRpcJs version 0.1.0
+JsonRpcJs version 0.1.4
 
 http://github.com/gimmi/jsonrpcjs/
 
@@ -17,16 +17,51 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-JsonRpc = function(url) {
-	this._url = url;
-	this._id = 0;
+jsonrpc = window.jsonrpc || { };
+
+jsonrpc.CallStack = function (enterFn, enterScope, exitFn, exitScope) {
+	this._counter = 0;
+	this._enterFn = enterFn;
+	this._exitFn = exitFn;
+	this._enterScope = enterScope;
+	this._exitScope = exitScope;
 };
 
-JsonRpc.prototype = {
-	call: function(/* ... */) {
-		var args = this._getParams.apply(this, arguments);
+jsonrpc.CallStack.prototype = {
+	enter: function () {
+		this._counter = (this._counter < 0 ? 1 : this._counter + 1);
+		if(this._counter === 1) {
+			this._enterFn.apply(this._enterScope, arguments);
+		}
+	},
+	
+	exit: function (fn) {
+		this._counter -= 1;
+		if (this._counter === 0) {
+			this._exitFn.apply(this._exitScope, arguments);
+		}
+	}
+};
 
-		this._doJsonPost(this._url, args.request, function(success, data) {
+jsonrpc = window.jsonrpc || { };
+
+jsonrpc.JsonRpc = function(url) {
+	this._url = url;
+	this._id = 0;
+	this.loading = new jsonrpc.Observable();
+	this.loaded = new jsonrpc.Observable();
+	this._loadingState = new jsonrpc.CallStack(this.loading.trigger, this.loading, this.loaded.trigger, this.loaded);
+};
+
+jsonrpc.JsonRpc.prototype = {
+	call: function(/* ... */) {
+		var me = this,
+			args = me._getParams.apply(this, arguments);
+
+		me._loadingState.enter();
+		
+		me._doJsonPost(me._url, args.request, function(success, data) {
+			me._loadingState.exit();
 			if (!success) {
 				data = { error: { message: data } };
 			}
@@ -96,5 +131,32 @@ JsonRpc.prototype = {
 			}
 		};
 		xhr.send(JSON.stringify(data));
+	}
+};
+jsonrpc = window.jsonrpc || { };
+
+jsonrpc.Observable = function () {
+	this._listeners = [];
+};
+
+jsonrpc.Observable.prototype = {
+	bind: function (fn, scope) {
+		var token = { fn: fn, scope: scope || this };
+		this._listeners.push(token);
+		return token;
+	},
+	
+	unbind: function (token) {
+		var idx = this._listeners.indexOf(token);
+		if (idx !== -1) {
+			this._listeners.splice(idx, 1);
+		}
+	},
+	
+	trigger: function (/* ... */) {
+		var i;
+		for (i = 0; i < this._listeners.length; i += 1) {
+			this._listeners[i].fn.apply(this._listeners[i].scope, arguments);
+		}
 	}
 };
