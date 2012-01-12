@@ -176,4 +176,21 @@ describe('server test', function () {
 			expect(callbackArgs).toEqual([false, 'An error occured']);
 		});
 	});
+
+	it("should batch calls", function () {
+		var requestCount, responseCount = 0;
+		var request = function (i) {
+			target.call('stringEcho', 'call ' + i, function (result) {
+				expect(result).toEqual('call ' + i);
+				responseCount += 1;
+			});
+		};
+		for (requestCount = 1; requestCount <= 10; requestCount += 1) {
+			request(requestCount);
+		}
+
+		waitsFor(function () {
+			return responseCount === 10;
+		}, 'Server call', 1000);
+	});
 });
